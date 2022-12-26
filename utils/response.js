@@ -3,12 +3,17 @@ const NotFoundError = (h)=>{
     const message = '404 Page not found'
     const response = createReponse(false,message)
     return h.status(code).json(response)
-  }
+}
 
-  const responseError = (h,error,code)=>{
+const responseSuccess = (h,message,data={})=>{
+    const response = createReponse(false,message,data)
+    return h.status(200).json(response)
+}
+
+const responseError = (h,error,code)=>{
     const response = createReponse(false,"Server Error "+code,{error : error.message})
     return h.status(code).json(response)
-  }
+}
 
 const createReponse = (status,message,data={})=>{
     return {
@@ -20,5 +25,7 @@ const createReponse = (status,message,data={})=>{
 
   module.exports = {
     NotFoundError,
-    responseError
+    responseError,
+    createReponse,
+    responseSuccess
   }
