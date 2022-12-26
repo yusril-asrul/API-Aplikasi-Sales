@@ -11,9 +11,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 
-app.get("*",function(req,res){
-    res.send('jwtnya adlaha ='+config.jwtSecret)
-});
+require('./route/index')(app)
 
 app.listen(config.port, () => {
   console.log(`🚀 in port ${config.port}`)
