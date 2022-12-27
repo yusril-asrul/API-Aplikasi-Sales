@@ -10,4 +10,12 @@ module.exports = {
         }
         return false
     },
+    async cekAppSecretKey(appKey,appSecret){
+        const query = `SELECT * FROM app_key WHERE appKey = '${appKey}' AND appSecret = '${appSecret}'`
+        const data = await modelHelper.getRowsQuery(connection,query)
+        if (data && data.length > 0){
+            return data[0]
+        }
+        return false
+    }
 }
