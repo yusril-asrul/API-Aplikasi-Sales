@@ -1,5 +1,39 @@
 const JWT = require("jsonwebtoken");
-const { jwtSecret } = require('../config/app')
+const { jwtSecret, urlUpload, dirUpload } = require('../config/app')
+const request = require('request')
+
+function randomString(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+async function uploadBase64toPhpCI3(name,base64){
+    return await new Promise((resolve,reject)=>{
+            const otpOption = {
+                url : urlUpload,
+                headers : {'ContentType':'multipart/form-data'},
+                method : "POST",
+                formData : {
+                    dir    : dirUpload,
+                    datafile     : base64,
+                    filename   : name,
+                }
+            }
+            request(otpOption,function(err,response){
+                console.log("UPLOAD FILE ===========|> ",response.body,name)
+                if(err) {
+                    console.log(err)
+                    reject(err);
+                }
+                resolve(true)
+            });
+    })
+}
 
 function generateToken(obj){
     let dJwt = JWT.sign(obj, jwtSecret, {
@@ -62,5 +96,5 @@ function nextEdit(req,res,next){
 }
 
 module.exports = {
-    generateCode,generateToken,decodeToken,nextAdd,nextEdit
+    generateCode,generateToken,decodeToken,nextAdd,nextEdit,uploadBase64toPhpCI3,randomString
 }
