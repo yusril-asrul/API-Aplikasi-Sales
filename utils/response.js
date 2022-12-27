@@ -1,8 +1,23 @@
 const NotFoundError = (h)=>{
     const code = 404
-    const message = '404 Page not found'
+    const message = 'Page not found.'
     const response = createReponse(false,message)
     return h.status(code).json(response)
+}
+
+const Forbidden = (h) => {
+    const response = createReponse(false,"Forbidden. You don't have permission.")
+    return h.status(403).json(response)
+}
+
+const Unauthorized = (h) => {
+    const response = createReponse(false,"Unauthorized Error.")
+    return h.status(401).json(response)
+}
+
+const NeedAuthentication = (h) => {
+    const response = createReponse(false,"Need Authentication.")
+    return h.status(401).json(response)
 }
 
 const responseSuccess = (h,message,data={})=>{
@@ -24,8 +39,11 @@ const createReponse = (status,message,data={})=>{
 }
 
   module.exports = {
+    Forbidden,
     NotFoundError,
     responseError,
     createReponse,
-    responseSuccess
+    responseSuccess,
+    NeedAuthentication,
+    Unauthorized
   }
