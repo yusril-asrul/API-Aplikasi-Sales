@@ -20,8 +20,8 @@ const NeedAuthentication = (h) => {
     return h.status(401).json(response)
 }
 
-const responseSuccess = (h,message,data={})=>{
-    const response = createReponse(false,message,data)
+const responseSuccess = (h,message,data={},status=true)=>{
+    const response = createReponse(status,message,data)
     return h.status(200).json(response)
 }
 
