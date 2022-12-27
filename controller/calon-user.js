@@ -6,9 +6,10 @@ const save = async function(req,res){
         const {nama_usaha,pemilik_usaha,nohp,alamat,lat,long,foto} = req.body
         const {applikasi_yang_digunakan,lama_tahun,lama_bulan,masa_berakhir} = req.body
         const idUser = req.auth.user.id
-
         const jns = req.jenis
 
+
+        let message = ''
         let data = {
             id_user : idUser,
             nama_usaha,pemilik_usaha,nohp,alamat,
@@ -18,14 +19,22 @@ const save = async function(req,res){
             lama_tahun,lama_bulan,masa_berakhir,
         }
 
-        if (jns === "ADD"){
+        if (foto) {
             let filename = randomString(10)+'.jpg';
             await uploadBase64toPhpCI3(filename,foto)
             data.foto = filename
-            await simpanDataCalonUser(jns,data)
         }
 
-        return responseSuccess(res,"Success.")
+        if (jns === "ADD"){
+            await simpanDataCalonUser(jns,data)
+            message = 'Created.'
+        } else if (jns === "EDIT") {
+            let id = req.params.id
+            await simpanDataCalonUser(jns,data,id,'id')
+            message = 'Edited.'
+        }
+
+        return responseSuccess(res,message)
     } catch(error){
         console.log(error)
         return responseError(res,error,500);
