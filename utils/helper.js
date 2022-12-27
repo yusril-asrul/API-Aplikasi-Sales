@@ -51,6 +51,16 @@ function generateCode(key){
    return `${key}-${thn}${bulan}${tgl}${randNumb}`;
 }
 
+function nextAdd(req,res,next){
+    req.jenis = "ADD"
+    next()
+}
+
+function nextEdit(req,res,next){
+    req.jenis = "EDIT"
+    next()
+}
+
 module.exports = {
-    generateCode,generateToken,decodeToken
+    generateCode,generateToken,decodeToken,nextAdd,nextEdit
 }
