@@ -23,6 +23,7 @@ const login = async function(req,res){
         return responseSuccess(res,"Success Login",{
             token,
             username,
+            id : data.id,
             nama : data.nama,
             nohp : data.nohp,
             email : data.email,
