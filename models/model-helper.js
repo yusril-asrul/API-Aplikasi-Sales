@@ -1,3 +1,8 @@
+const deleteById = async function(db,table,id){
+    const query = `DELETE FROM ${table} WHERE id = '${id}'`
+    return await runQuery(db,query)
+}
+
 const getRowsQuery = async function (db,query) {
     return await new Promise(function (resolve,reject) {
         db.query(query, function (err, rows) {
@@ -59,5 +64,5 @@ const saveRowQuery = async function (db,table, data, id, action, key_where) {
 }
 
 module.exports = {
-    getRowsQuery, runQuery, saveRowQuery
+    getRowsQuery, runQuery, saveRowQuery, deleteById
 }

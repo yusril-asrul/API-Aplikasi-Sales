@@ -7,4 +7,7 @@ module.exports = {
         let query = await modelHelper.saveRowQuery(connection,table,data,id,jns,key)
         return query
     },
+    async hapusDataCalonUser(id){
+        return await modelHelper.deleteById(connection,table,id)
+    }
 }

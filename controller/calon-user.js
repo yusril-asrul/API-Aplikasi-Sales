@@ -1,6 +1,18 @@
-const { simpanDataCalonUser } = require('../models');
+const { simpanDataCalonUser, hapusDataCalonUser } = require('../models');
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const {responseError,responseSuccess} = require('../utils/response');
+
+const hapus = async (req,res) => {
+    try {
+        let id = req.params.id
+        await hapusDataCalonUser(id)
+        return responseSuccess(res,'Deleted.')
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
+    }
+}
+
 const save = async function(req,res){
     try {
         const {nama_usaha,pemilik_usaha,nohp,alamat,lat,long,foto} = req.body
@@ -41,4 +53,4 @@ const save = async function(req,res){
     }
 }
 
-module.exports = {save}
+module.exports = {save,hapus}
