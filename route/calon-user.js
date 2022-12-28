@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { body, param } = require("express-validator");
 const validationResult = require('../utils/validationResult');
-const {save, hapus} = require('../controller/calon-user');
+const {save, hapus, load} = require('../controller/calon-user');
 const { nextAdd, nextEdit } = require("../utils/helper");
 
 // Validate Request
@@ -36,5 +36,7 @@ const validationCalonUserEdit = [
 router.post("/",validationCalonUserAdd,validationResult,nextAdd,save);
 router.put("/:id",validationCalonUserEdit,validationResult,nextEdit,save);
 router.delete("/:id",validatorParamCalonUser,validationResult,hapus);
+router.get("/:id",load);
+router.get("/",load);
 
 module.exports = router;

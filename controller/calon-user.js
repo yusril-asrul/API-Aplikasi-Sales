@@ -1,6 +1,17 @@
-const { simpanDataCalonUser, hapusDataCalonUser } = require('../models');
+const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser } = require('../models');
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const {responseError,responseSuccess} = require('../utils/response');
+
+const load = async (req,res) => {
+    let id = req.params.id ? req.params.id : '';
+    const idUser = req.auth.user.id
+    let data = await loadDataCalonUser(idUser,id);
+    if (data){
+        return responseSuccess(res,'Loaded.',data)
+    } else {
+        return responseSuccess(res,'data not found.',{},false)
+    }
+}
 
 const hapus = async (req,res) => {
     try {
@@ -53,4 +64,4 @@ const save = async function(req,res){
     }
 }
 
-module.exports = {save,hapus}
+module.exports = {save,hapus,load}
