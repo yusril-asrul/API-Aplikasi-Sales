@@ -66,10 +66,9 @@ const save = async function(req,res){
 
 const update_status = async function(req,res){
     try {
-        const status = req.status
-        const id = req.id
+        const {id,status} = req.body
 
-        let message = ''
+        let message = 'Berhasil Update Status'
         let data = {
             status : status
         }
