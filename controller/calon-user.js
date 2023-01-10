@@ -64,4 +64,24 @@ const save = async function(req,res){
     }
 }
 
+const update_status = async function(req,res){
+    try {
+        const status = req.status
+        const id = req.id
+
+        let message = ''
+        let data = {
+            status : status
+        }
+
+        let jns = "EDIT";
+        await simpanDataCalonUser(jns,data,id,'id')
+
+        return responseSuccess(res,message)
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
+    }
+}
+
 module.exports = {save,hapus,load}
