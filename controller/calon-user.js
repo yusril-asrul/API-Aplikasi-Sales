@@ -84,4 +84,4 @@ const update_status = async function(req,res){
     }
 }
 
-module.exports = {save,hapus,load}
+module.exports = {save,hapus,load,update_status}
