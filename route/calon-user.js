@@ -37,7 +37,7 @@ router.post("/",validationCalonUserAdd,validationResult,nextAdd,save);
 router.put("/:id",validationCalonUserEdit,validationResult,nextEdit,save);
 router.delete("/:id",validatorParamCalonUser,validationResult,hapus);
 router.get("/:id",load);
-router.get("/",load);
+router.get("/:cari/:first_date/:last_date",load);
 router.post("/stat_update", update_status);
 
 module.exports = router;
