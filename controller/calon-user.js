@@ -2,16 +2,21 @@ const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser } = require('
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const {responseError,responseSuccess} = require('../utils/response');
 
-const load = async (req,res) => {
-    let id = req.params.id ? req.params.id : '';
-    const {cari,first_date,last_date} = req.body
+const load = async function(req,res){
+    try {
+        let id = req.params.id ? req.params.id : '';
+        const {cari,first_date,last_date} = req.body
 
-    const idUser = req.auth.user.id
-    let data = await loadDataCalonUser(idUser,id,cari,first_date,last_date);
-    if (data){
-        return responseSuccess(res,'Loaded.',data)
-    } else {
-        return responseSuccess(res,'data not found.',{},false)
+        const idUser = req.auth.user.id
+        let data = await loadDataCalonUser(idUser,id,cari,first_date,last_date);
+        if (data){
+            return responseSuccess(res,'Loaded.',data)
+        } else {
+            return responseSuccess(res,'data not found.',{},false)
+        }
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
     }
 }
 
