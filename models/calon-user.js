@@ -18,13 +18,15 @@ module.exports = {
         let query = `
             SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,map_lat, map_long,
             applikasi_yang_digunakan,lama_tahun,lama_bulan,
-            DATE_FORMAT(masa_berakhir, "%Y-%m-%d") as masa_berakhir,
+            masa_berakhir,
             CONCAT('${dirUpload}',foto) as url_image,status,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
             FROM ${table} WHERE id_user = '${idUser}'`
         if (id) {
-            query += ` AND id='${id}'`
+            query += ` AND id='${id}' ORDER id DESC`
             detail = true
+        }else{
+            query += ` ORDER id DESC`
         }
 
         let rows = await modelHelper.getRowsQuery(connection,query)
