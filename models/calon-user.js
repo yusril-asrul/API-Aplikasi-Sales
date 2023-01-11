@@ -18,7 +18,7 @@ module.exports = {
         let query = `
             SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,map_lat, map_long,
             applikasi_yang_digunakan,lama_tahun,lama_bulan,
-            DATE_FORMAT(masa_berakhir, "%d/%m/%Y") as masa_berakhir,
+            DATE_FORMAT(masa_berakhir, "%Y-%m-%d") as masa_berakhir,
             CONCAT('${dirUpload}',foto) as url_image,status,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
             FROM ${table} WHERE id_user = '${idUser}'`
