@@ -4,9 +4,7 @@ const {responseError,responseSuccess} = require('../utils/response');
 
 const load = async (req,res) => {
     let id = req.params.id ? req.params.id : '';
-    let cari = req.params.cari ? req.params.cari : '';
-    let first_date = req.params.first_date ? req.params.first_date : '';
-    let last_date = req.params.last_date ? req.params.last_date : '';
+    const {cari,first_date,last_date} = req.body
 
     const idUser = req.auth.user.id
     let data = await loadDataCalonUser(idUser,id,cari,first_date,last_date);
