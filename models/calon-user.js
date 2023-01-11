@@ -23,10 +23,10 @@ module.exports = {
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
             FROM ${table} WHERE id_user = '${idUser}'`
         if (id) {
-            query += ` AND id='${id}' ORDER id DESC`
+            query += ` AND id='${id}' ORDER BY id DESC`
             detail = true
         }else{
-            query += ` ORDER id DESC`
+            query += ` ORDER BY id DESC`
         }
 
         let rows = await modelHelper.getRowsQuery(connection,query)
