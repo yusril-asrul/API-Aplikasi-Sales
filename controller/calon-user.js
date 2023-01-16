@@ -34,7 +34,7 @@ const hapus = async (req,res) => {
 const save = async function(req,res){
     try {
         const {nama_usaha,pemilik_usaha,nohp,alamat,lat,long,foto,jenis_usaha,jenis_user} = req.body
-        const {applikasi_yang_digunakan,lama_tahun,lama_bulan,masa_berakhir} = req.body
+        const {applikasi_yang_digunakan,lama_tahun,lama_bulan,masa_berakhir,catatan} = req.body
         const idUser = req.auth.user.id
         const jns = req.jenis
 
@@ -47,6 +47,7 @@ const save = async function(req,res){
             map_long : long,
             applikasi_yang_digunakan,
             lama_tahun,lama_bulan,masa_berakhir,
+            catatan
         }
 
         if (foto) {
@@ -73,11 +74,15 @@ const save = async function(req,res){
 
 const update_status = async function(req,res){
     try {
-        const {id,status,keterangan} = req.body
+        const {id,status,keterangan,nominal} = req.body
 
         let message = 'Berhasil Update Status'
         let data = {
             status,keterangan
+        }
+
+        if (status == "Closing"){
+            data.nominal = nominal
         }
 
         let jns = "EDIT";
