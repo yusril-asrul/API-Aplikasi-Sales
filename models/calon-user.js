@@ -19,6 +19,7 @@ module.exports = {
             SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,
             jenis_usaha,
             jenis_user,
+            catatan,nominal,
             map_lat, map_long,
             applikasi_yang_digunakan,lama_tahun,lama_bulan,
             masa_berakhir,
