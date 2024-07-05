@@ -32,7 +32,7 @@ module.exports = {
 
         let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
 
-        let create_tmp = `CREATE TEMPORARY TABLE registrasi_tmp(
+        let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
                 id INT(11),
                 referral_use VARCHAR(25),
                 tgl DATE,
@@ -42,7 +42,10 @@ module.exports = {
                 kota VARCHAR(100),
                 paket VARCHAR(50)
         )`;
-        await modelHelper.getRowsQuery(connection,create_tmp)
+        await modelHelper.getRowsQuery(connection,create_tmp);
+
+        let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
+        await modelHelper.getRowsQuery(connection,del_data_tmp)
 
         for (const row of data_regis_booble) {
             await modelHelper.saveRowQuery(connection, 'registrasi_tmp', row, '', 'ADD', '');
