@@ -10,7 +10,10 @@ module.exports = {
     },
     async loadDataRegistrasi(kodeReferral,cari='',first_date='',last_date=''){
         let data = false;
-        let detail = false 
+        let detail = false;
+        
+        let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
+        await modelHelper.getRowsQuery(connection,drop_tmp)
 
         let query = `
             SELECT 
@@ -28,9 +31,6 @@ module.exports = {
             order by a.tgl desc`;
 
         let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
-
-        let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
-        await modelHelper.getRowsQuery(connection,drop_tmp)
 
         let create_tmp = `CREATE TEMPORARY TABLE registrasi_tmp(
                 id INT(11),
