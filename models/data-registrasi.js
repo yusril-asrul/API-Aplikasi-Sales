@@ -29,10 +29,8 @@ module.exports = {
 
         let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
 
-        /*
         let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
         await modelHelper.getRowsQuery(connection,drop_tmp)
-        */
 
         let create_tmp = `CREATE TEMPORARY TABLE registrasi_tmp(
                 id INT(11),
