@@ -34,7 +34,7 @@ module.exports = {
         await modelHelper.getRowsQuery(connection,drop_tmp)
         */
 
-        let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
+        let create_tmp = `CREATE TEMPORARY TABLE registrasi_tmp(
                 id INT(11),
                 referral_use VARCHAR(25),
                 tgl DATE,
