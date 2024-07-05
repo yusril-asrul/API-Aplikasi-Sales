@@ -133,13 +133,13 @@ module.exports = {
         let list_aktifitas = await modelHelper.getRowsQuery(connection,query)
 
 
-        if (detail){
+        /*if (detail){
             if (list_aktifitas.length > 0){
                 data = list_aktifitas
             }
-        } else {
+        } else {*/
             data = list_aktifitas
-        }
+        //}
 
         return data
     },
