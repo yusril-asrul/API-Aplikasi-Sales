@@ -83,7 +83,7 @@ module.exports = {
 
         if (detail){
             if (list_registrasi.length > 0){
-                data = list_registrasi[0]
+                data = list_registrasi
             }
         } else {
             data = list_registrasi
@@ -117,6 +117,7 @@ module.exports = {
         let query = `
             SELECT 
                 a.id,
+                DATE_FORMAT(date(a.create_at), "%d-%m-%Y") as tgl,
                 a.aktifitas as aktivitas,
                 a.status,
                 if(a.status = 'Proses', a.ket_proses,
@@ -130,7 +131,7 @@ module.exports = {
 
         if (detail){
             if (list_aktifitas.length > 0){
-                data = list_aktifitas[0]
+                data = list_aktifitas
             }
         } else {
             data = list_aktifitas
