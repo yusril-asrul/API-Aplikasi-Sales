@@ -34,12 +34,26 @@ const calonUser = (endpointArray,h)=>{
     return urlName
 }
 
+const dataRegistrasi = (endpointArray,h)=>{
+    let urlName = ''
+    switch (endpointArray.length){
+        case 2:
+            urlName = '/data-registrasi';
+            break
+        default:
+            return NotFoundError(h);
+    }
+    return urlName
+}
+
 const urlGenerator = (endpointArray,h) => {
     let urlName = ''
     if (endpointArray[0] === 'auth') {
         urlName = auth(endpointArray,h)
     } else if (endpointArray[0] === 'calon-user') {
         urlName = calonUser(endpointArray,h)
+    } else if (endpointArray[0] === 'data-registrasi') {
+        urlName = dataRegistrasi(endpointArray,h)
     }
     return urlName
 }
