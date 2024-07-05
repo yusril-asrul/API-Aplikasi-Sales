@@ -51,6 +51,7 @@ module.exports = {
         let query_data_regis = `
             SELECT 
                 b.id,
+                a.id as id_registrasi_booble,
                 DATE_FORMAT(a.tgl, "%d-%m-%Y") as tgl_regis,
                 a.nama,
                 a.email,
@@ -91,9 +92,27 @@ module.exports = {
         return data
     },
 
+    async cekDataRegistrasi(id_registrasi){
+        let data = false;
+
+        let query = `
+            SELECT 
+                a.id
+            from registrasi a 
+            where a.id_registrasi_booble = '${id_registrasi}'`
+
+        let list_registrasi = await modelHelper.getRowsQuery(connection,query)
+
+        if (list_registrasi.length > 0){
+            data = true
+        }
+
+        return data
+    },
+
     async loadDataAktifitas(id_registrasi){
         let data = false;
-        let detail = false 
+        let detail = true; 
 
         let query = `
             SELECT 

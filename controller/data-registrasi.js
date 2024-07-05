@@ -1,4 +1,4 @@
-const { loadDataRegistrasi, simpanUpdateRegistrasi, loadDataAktifitas, hapusAktifitas } = require('../models');
+const { loadDataRegistrasi, simpanUpdateRegistrasi, cekDataRegistrasi, loadDataAktifitas, hapusAktifitas } = require('../models');
 const { today } = require('../utils/helper');
 const {responseError,responseSuccess} = require('../utils/response');
 
@@ -22,11 +22,17 @@ const load = async function(req,res){
 
 const update_status = async function(req,res){
     try {
-        const {id,status,keterangan} = req.body
+        const {id,id_registrasi_booble,status,keterangan} = req.body
+
+        let cek = await cekDataRegistrasi(id_registrasi_booble);
         
         let message = 'Berhasil Update Status'
         let data = {
             status
+        }
+
+        if(cek == false){
+            data.id_registrasi_booble = id_registrasi_booble
         }
 
         if (status == "Follow Up"){
@@ -43,6 +49,9 @@ const update_status = async function(req,res){
         }
 
         let jns = "EDIT";
+        if(cek == false){
+            jns = "ADD";
+        }
         await simpanUpdateRegistrasi(jns,table="registrasi",data,id,'id')
 
         return responseSuccess(res,message)
@@ -54,14 +63,23 @@ const update_status = async function(req,res){
 
 const update_demo = async function(req,res){
     try {
-        const {id,demo} = req.body
+        const {id,id_registrasi_booble,demo} = req.body
+
+        let cek = await cekDataRegistrasi(id_registrasi_booble);
         
         let message = 'Berhasil Update Demo'
         let data = {
             demo
         }
 
+        if(cek == false){
+            data.id_registrasi_booble = id_registrasi_booble
+        }
+
         let jns = "EDIT";
+        if(cek == false){
+            jns = "ADD";
+        }
         await simpanUpdateRegistrasi(jns,table="registrasi",data,id,'id')
 
         return responseSuccess(res,message)
