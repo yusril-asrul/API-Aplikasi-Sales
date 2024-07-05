@@ -28,6 +28,7 @@ module.exports = {
             from registrasi a 
             left join jns_tagihan b on a.jns_tagihan = b.id
             where a.tgl >= '2024-07-04' and a.referral_use <> '' and a.referral_use is not null
+                and a.tgl between '${first_date}' and '${last_date}'
             order by a.tgl desc`;
 
         let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
