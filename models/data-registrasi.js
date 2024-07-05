@@ -14,8 +14,22 @@ module.exports = {
 
         try {
         
+            /*
             let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
             await modelHelper.getRowsQuery(connection,drop_tmp)
+            */
+
+            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
+                    id INT(11),
+                    referral_use VARCHAR(25),
+                    tgl DATE,
+                    nama VARCHAR(50),
+                    email VARCHAR(50),
+                    telp VARCHAR(15),
+                    kota VARCHAR(100),
+                    paket VARCHAR(50)
+            )`;
+            await modelHelper.getRowsQuery(connection,create_tmp);
 
             let query = `
                 SELECT 
@@ -34,18 +48,6 @@ module.exports = {
                 order by a.tgl desc`;
 
             let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
-
-            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                    id INT(11),
-                    referral_use VARCHAR(25),
-                    tgl DATE,
-                    nama VARCHAR(50),
-                    email VARCHAR(50),
-                    telp VARCHAR(15),
-                    kota VARCHAR(100),
-                    paket VARCHAR(50)
-            )`;
-            await modelHelper.getRowsQuery(connection,create_tmp);
 
             let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
             await modelHelper.getRowsQuery(connection,del_data_tmp)
