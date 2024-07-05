@@ -137,7 +137,8 @@ module.exports = {
                     if(a.status = 'Gagal', a.ket_gagal, '')
                 ) as ket_status
             from aktifitas a 
-            where a.id_registrasi = '${id_registrasi}'`
+            where a.id_registrasi = '${id_registrasi}'
+            order by a.id desc`
 
         let list_aktifitas = await modelHelper.getRowsQuery(connection,query)
 
