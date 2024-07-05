@@ -24,14 +24,14 @@ const update_status = async function(req,res){
     try {
         const {id,id_registrasi_booble,status,keterangan} = req.body
 
-        let cek = await cekDataRegistrasi(id_registrasi_booble);
+        let id_registrasi = await cekDataRegistrasi(id_registrasi_booble);
         
         let message = 'Berhasil Update Status'
         let data = {
             status
         }
 
-        if(cek == false){
+        if(id_registrasi == false){
             data.id_registrasi_booble = id_registrasi_booble
         }
 
@@ -49,12 +49,10 @@ const update_status = async function(req,res){
         }
 
         let jns = "EDIT";
-        if(cek == false){
+        if(id_registrasi == false){
             jns = "ADD";
         }
-        await simpanUpdateRegistrasi(jns,table="registrasi",data,id,'id')
-
-        let id_registrasi = await cekDataRegistrasi(id_registrasi_booble);
+        await simpanUpdateRegistrasi(jns,table="registrasi",data,id_registrasi,'id')
 
         return responseSuccess(res,message,id_registrasi)
     } catch(error){
@@ -67,24 +65,22 @@ const update_demo = async function(req,res){
     try {
         const {id,id_registrasi_booble,demo} = req.body
 
-        let cek = await cekDataRegistrasi(id_registrasi_booble);
+        let id_registrasi = await cekDataRegistrasi(id_registrasi_booble);
         
         let message = 'Berhasil Update Demo'
         let data = {
             demo
         }
 
-        if(cek == false){
+        if(id_registrasi == false){
             data.id_registrasi_booble = id_registrasi_booble
         }
 
         let jns = "EDIT";
-        if(cek == false){
+        if(id_registrasi == false){
             jns = "ADD";
         }
-        await simpanUpdateRegistrasi(jns,table="registrasi",data,id,'id')
-
-        let id_registrasi = await cekDataRegistrasi(id_registrasi_booble);
+        await simpanUpdateRegistrasi(jns,table="registrasi",data,id_registrasi,'id')
 
         return responseSuccess(res,message,id_registrasi)
     } catch(error){
