@@ -104,7 +104,7 @@ module.exports = {
         let list_registrasi = await modelHelper.getRowsQuery(connection,query)
 
         if (list_registrasi.length > 0){
-            data = true
+            data = list_registrasi[0].id
         }
 
         return data
