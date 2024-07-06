@@ -12,24 +12,27 @@ module.exports = {
         let data = false;
         let detail = false;
 
-        let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                id INT(11),
-                referral_use VARCHAR(25),
-                tgl DATE,
-                nama VARCHAR(50),
-                email VARCHAR(50),
-                telp VARCHAR(15),
-                kota VARCHAR(100),
-                paket VARCHAR(50)
-        )`;
-        await modelHelper.getRowsQuery(connection,create_tmp);
-
         try {
         
             /*
             let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
             await modelHelper.getRowsQuery(connection,drop_tmp)
             */
+
+            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
+                    id INT(11),
+                    referral_use VARCHAR(25),
+                    tgl DATE,
+                    nama VARCHAR(50),
+                    email VARCHAR(50),
+                    telp VARCHAR(15),
+                    kota VARCHAR(100),
+                    paket VARCHAR(50)
+            )`;
+            await modelHelper.runQuery(connection,create_tmp);
+
+            let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
+            await modelHelper.runQuery(connection,del_data_tmp)
 
             let query = `
                 SELECT 
@@ -49,12 +52,43 @@ module.exports = {
 
             let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
 
-            let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
-            await modelHelper.getRowsQuery(connection,del_data_tmp)
+            /*
+            if (data_regis_booble.length === 0) {
+                console.log("Tidak ada data yang diambil dari connection_booble.");
+                return data; // Mengembalikan data kosong jika tidak ada data yang diambil
+            }
+            */
 
+            // Fungsi untuk memformat tanggal ke dalam format yyyy-mm-dd
+            function formatDate(date) {
+                const d = new Date(date);
+                const year = d.getFullYear();
+                const month = (`0${d.getMonth() + 1}`).slice(-2);
+                const day = (`0${d.getDate()}`).slice(-2);
+                return `${year}-${month}-${day}`;
+            }
+
+            // Membuat query batch untuk memasukkan data ke tabel sementara
+            let values = data_regis_booble.map(row => {
+                let formattedDate = formatDate(row.tgl);
+                return `(${row.id}, '${row.referral_use}', '${formattedDate}', '${row.nama}', '${row.email}', '${row.telp}', '${row.kota}', '${row.paket}')`;
+            }).join(',');
+
+            // Jika data_regis_booble tidak kosong, pastikan values tidak kosong sebelum melanjutkan
+            if (values) {
+                let insert_tmp = `
+                    INSERT INTO registrasi_tmp (id, referral_use, tgl, nama, email, telp, kota, paket) 
+                    VALUES ${values}`;
+                //console.log("Query insert yang dihasilkan:", insert_tmp);
+                await modelHelper.getRowsQuery(connection, insert_tmp);
+                //console.log("Data dimasukkan ke tabel sementara registrasi_tmp");
+            }
+
+            /*
             for (const row of data_regis_booble) {
                 await modelHelper.saveRowQuery(connection, 'registrasi_tmp', row, '', 'ADD', '');
             }
+            */
 
             let query_data_regis = `
                 SELECT 
@@ -87,7 +121,6 @@ module.exports = {
             query_data_regis += ` ORDER BY a.id DESC`
 
             let list_registrasi = await modelHelper.getRowsQuery(connection,query_data_regis)
-
 
             if (detail){
                 if (list_registrasi.length > 0){
