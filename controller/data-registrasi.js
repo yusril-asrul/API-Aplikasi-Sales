@@ -54,7 +54,9 @@ const update_status = async function(req,res){
         }
         await simpanUpdateRegistrasi(jns,table="registrasi",data,id_registrasi,'id')
 
-        return responseSuccess(res,message,id_registrasi)
+        let id_registrasi_updt = await cekDataRegistrasi(id_registrasi_booble);
+
+        return responseSuccess(res,message,id_registrasi_updt)
     } catch(error){
         console.log(error)
         return responseError(res,error,500);
@@ -82,7 +84,9 @@ const update_demo = async function(req,res){
         }
         await simpanUpdateRegistrasi(jns,table="registrasi",data,id_registrasi,'id')
 
-        return responseSuccess(res,message,id_registrasi)
+        let id_registrasi_updt = await cekDataRegistrasi(id_registrasi_booble);
+
+        return responseSuccess(res,message,id_registrasi_updt)
     } catch(error){
         console.log(error)
         return responseError(res,error,500);
