@@ -12,24 +12,24 @@ module.exports = {
         let data = false;
         let detail = false;
 
+        let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
+                id INT(11),
+                referral_use VARCHAR(25),
+                tgl DATE,
+                nama VARCHAR(50),
+                email VARCHAR(50),
+                telp VARCHAR(15),
+                kota VARCHAR(100),
+                paket VARCHAR(50)
+        )`;
+        await modelHelper.getRowsQuery(connection,create_tmp);
+
         try {
         
             /*
             let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
             await modelHelper.getRowsQuery(connection,drop_tmp)
             */
-
-            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                    id INT(11),
-                    referral_use VARCHAR(25),
-                    tgl DATE,
-                    nama VARCHAR(50),
-                    email VARCHAR(50),
-                    telp VARCHAR(15),
-                    kota VARCHAR(100),
-                    paket VARCHAR(50)
-            )`;
-            await modelHelper.getRowsQuery(connection,create_tmp);
 
             let query = `
                 SELECT 
