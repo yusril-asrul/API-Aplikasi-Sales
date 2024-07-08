@@ -1,14 +1,14 @@
-const { loadDataRegistrasi, simpanUpdateRegistrasi, cekDataRegistrasi, loadDataAktifitas, hapusAktifitas } = require('../models');
+const { loadDataRegistrasi, simpanUpdateRegistrasi, cekDataRegistrasi, loadDataAktifitas, hapusAktifitas, loadDataKebutuhan, hapusKebutuhan } = require('../models');
 const { today } = require('../utils/helper');
 const {responseError,responseSuccess} = require('../utils/response');
 
 const load = async function(req,res){
     try {
         let id = req.params.id ? req.params.id : '';
-        const {cari,first_date,last_date} = req.body
+        const {cari,first_date,last_date,status} = req.body
 
         const kodeReferral = req.auth.user.kode_referral
-        let data = await loadDataRegistrasi(kodeReferral,cari,first_date,last_date);
+        let data = await loadDataRegistrasi(kodeReferral,cari,first_date,last_date,status);
         if (data){
             return responseSuccess(res,'Loaded.',data)
         } else {
@@ -22,7 +22,7 @@ const load = async function(req,res){
 
 const update_status = async function(req,res){
     try {
-        const {id,id_registrasi_booble,status,keterangan} = req.body
+        const {id,id_registrasi_booble,status,keterangan,status_aktif,tgl_aktif,nominal_closing} = req.body
 
         let id_registrasi = await cekDataRegistrasi(id_registrasi_booble);
         
@@ -46,6 +46,9 @@ const update_status = async function(req,res){
         if (status == "Closing"){
             data.ket_closing = keterangan
             data.update_closing = today()
+            data.status_aktif = status_aktif
+            data.tgl_aktif = tgl_aktif
+            data.nominal_closing = nominal_closing
         }
 
         let jns = "EDIT";
@@ -98,7 +101,6 @@ const load_aktfitas = async function(req,res){
         let id = req.params.id ? req.params.id : '';
         const {id_registrasi} = req.body
 
-        const kodeReferral = req.auth.user.kode_referral
         let data = await loadDataAktifitas(id_registrasi);
         if (data){
             return responseSuccess(res,'Loaded.',data)
@@ -176,4 +178,57 @@ const update_status_aktifitas = async function(req,res){
     }
 }
 
-module.exports = {load, update_status, update_demo, load_aktfitas, simpan_aktifitas, hapus_aktiftas, update_status_aktifitas}
+
+const load_kebutuhan = async function(req,res){
+    try {
+        let id = req.params.id ? req.params.id : '';
+        const {id_registrasi} = req.body
+
+        let data = await loadDataKebutuhan(id_registrasi);
+        if (data){
+            return responseSuccess(res,'Loaded.',data)
+        } else {
+            return responseSuccess(res,'data not found.',{},false)
+        }
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
+    }
+}
+
+const simpan_kebutuhan = async function(req,res){
+    try {
+        const {id_registrasi,kebutuhan} = req.body
+        const idUser = req.auth.user.id
+        
+        let message = 'Kebutuhan Berhasil Disimpan'
+        let data = {
+            id_registrasi,
+            kebutuhan,
+            create_by: idUser,
+            create_at: today()
+        }
+
+        let jns = "ADD";
+        await simpanUpdateRegistrasi(jns,table="kebutuhan",data,id='','id')
+
+        return responseSuccess(res,message)
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
+    }
+}
+
+const hapus_kebutuhan = async function(req,res){
+    try {
+        const {id} = req.body
+
+        await hapusKebutuhan(id)
+        return responseSuccess(res,'Deleted.')
+    } catch(error){
+        console.log(error)
+        return responseError(res,error,500);
+    }
+}
+
+module.exports = {load, update_status, update_demo, load_aktfitas, simpan_aktifitas, hapus_aktiftas, update_status_aktifitas, load_kebutuhan, simpan_kebutuhan, hapus_kebutuhan}

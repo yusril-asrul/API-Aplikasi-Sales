@@ -8,7 +8,7 @@ module.exports = {
         let query = await modelHelper.saveRowQuery(connection,table,data,id,jns,key)
         return query
     },
-    async loadDataRegistrasi(kodeReferral,cari='',first_date='',last_date=''){
+    async loadDataRegistrasi(kodeReferral,cari='',first_date='',last_date='',status=''){
         let data = false;
         let detail = false;
 
@@ -116,6 +116,12 @@ module.exports = {
             if (first_date) {
                 query_data_regis += ` AND a.tgl BETWEEN '${first_date}' AND '${last_date}'`;
             }
+            if (status != '' && status != 'New') {
+                query_data_regis += ` AND b.status = '${status}'`;
+            }
+            if (status == 'New') {
+                query_data_regis += ` AND (b.status = '${status}' or b.status is null)`;
+            }
             query_data_regis += ` ORDER BY a.id DESC`;
 
             let list_registrasi = await modelHelper.getRowsQuery(connection, query_data_regis);
@@ -187,5 +193,34 @@ module.exports = {
     },
     async hapusAktifitas(id){
         return await modelHelper.deleteById(connection,table='aktifitas',id)
+    },
+
+    async loadDataKebutuhan(id_registrasi){
+        let data = false;
+        let detail = true; 
+
+        let query = `
+            SELECT 
+                a.id,
+                a.kebutuhan
+            from kebutuhan a 
+            where a.id_registrasi = '${id_registrasi}'
+            order by a.id desc`
+
+        let list_kebutuhan = await modelHelper.getRowsQuery(connection,query)
+
+
+        /*if (detail){
+            if (list_aktifitas.length > 0){
+                data = list_aktifitas
+            }
+        } else {*/
+            data = list_kebutuhan
+        //}
+
+        return data
+    },
+    async hapusKebutuhan(id){
+        return await modelHelper.deleteById(connection,table='kebutuhan',id)
     },
 }
