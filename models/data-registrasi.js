@@ -13,27 +13,29 @@ module.exports = {
         let detail = false;
 
         try {
-        
+            // Hapus tabel sementara jika ada
+            console.log("Menghapus tabel sementara jika ada...");
             let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
-            await modelHelper.getRowsQuery(connection,drop_tmp)
+            await modelHelper.getRowsQuery(connection, drop_tmp);
+            console.log("Tabel sementara registrasi_tmp dihapus");
 
+            // Buat tabel sementara
+            console.log("Membuat tabel sementara registrasi_tmp...");
             let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                    id INT(11),
-                    referral_use VARCHAR(25),
-                    tgl DATE,
-                    nama VARCHAR(50),
-                    email VARCHAR(50),
-                    telp VARCHAR(15),
-                    kota VARCHAR(100),
-                    paket VARCHAR(50)
+                id INT(11),
+                referral_use VARCHAR(25),
+                tgl DATE,
+                nama VARCHAR(50),
+                email VARCHAR(50),
+                telp VARCHAR(15),
+                kota VARCHAR(100),
+                paket VARCHAR(50)
             )`;
-            await modelHelper.runQuery(connection,create_tmp);
+            await modelHelper.runQuery(connection, create_tmp);
+            console.log("Tabel sementara registrasi_tmp dibuat");
 
-            /*
-            let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
-            await modelHelper.runQuery(connection,del_data_tmp)
-            */
-
+            // Query untuk mendapatkan data registrasi dari connection_booble
+            console.log("Mengambil data registrasi dari connection_booble...");
             let query = `
                 SELECT 
                     a.id,
@@ -44,20 +46,21 @@ module.exports = {
                     a.telp,
                     a.kota,
                     b.nama as paket
-                from registrasi a 
-                left join jns_tagihan b on a.jns_tagihan = b.id
-                where a.tgl >= '2024-07-04' and a.referral_use <> '' and a.referral_use is not null
-                    and a.tgl between '${first_date}' and '${last_date}'
-                order by a.tgl desc`;
+                FROM registrasi a 
+                LEFT JOIN jns_tagihan b ON a.jns_tagihan = b.id
+                WHERE a.tgl >= '2024-07-04' 
+                    AND a.referral_use <> '' 
+                    AND a.referral_use IS NOT NULL
+                    AND a.tgl BETWEEN '${first_date}' AND '${last_date}'
+                ORDER BY a.tgl DESC`;
 
-            let data_regis_booble = await modelHelper.getRowsQuery(connection_booble,query)
+            let data_regis_booble = await modelHelper.getRowsQuery(connection_booble, query);
+            console.log("Data registrasi berhasil diambil:", data_regis_booble);
 
-            /*
             if (data_regis_booble.length === 0) {
                 console.log("Tidak ada data yang diambil dari connection_booble.");
                 return data; // Mengembalikan data kosong jika tidak ada data yang diambil
             }
-            */
 
             // Fungsi untuk memformat tanggal ke dalam format yyyy-mm-dd
             function formatDate(date) {
@@ -69,6 +72,7 @@ module.exports = {
             }
 
             // Membuat query batch untuk memasukkan data ke tabel sementara
+            console.log("Menyiapkan data untuk dimasukkan ke tabel sementara...");
             let values = data_regis_booble.map(row => {
                 let formattedDate = formatDate(row.tgl);
                 return `(${row.id}, '${row.referral_use}', '${formattedDate}', '${row.nama}', '${row.email}', '${row.telp}', '${row.kota}', '${row.paket}')`;
@@ -76,20 +80,16 @@ module.exports = {
 
             // Jika data_regis_booble tidak kosong, pastikan values tidak kosong sebelum melanjutkan
             if (values) {
+                console.log("Memasukkan data ke tabel sementara...");
                 let insert_tmp = `
                     INSERT INTO registrasi_tmp (id, referral_use, tgl, nama, email, telp, kota, paket) 
                     VALUES ${values}`;
-                //console.log("Query insert yang dihasilkan:", insert_tmp);
                 await modelHelper.getRowsQuery(connection, insert_tmp);
-                //console.log("Data dimasukkan ke tabel sementara registrasi_tmp");
+                console.log("Data dimasukkan ke tabel sementara registrasi_tmp");
             }
 
-            /*
-            for (const row of data_regis_booble) {
-                await modelHelper.saveRowQuery(connection, 'registrasi_tmp', row, '', 'ADD', '');
-            }
-            */
-
+            // Query untuk mendapatkan data registrasi yang sudah diproses
+            console.log("Mengambil data registrasi yang sudah diproses...");
             let query_data_regis = `
                 SELECT 
                     b.id,
@@ -100,34 +100,33 @@ module.exports = {
                     a.telp,
                     a.kota,
                     a.paket,
-                    ifnull(b.demo, '') as demo,
-                    ifnull(b.status, 'New') as status
-                from registrasi_tmp a 
-                left join registrasi b on a.id = b.id_registrasi_booble
-                where a.id <>''`
+                    IFNULL(b.demo, '') as demo,
+                    IFNULL(b.status, 'New') as status
+                FROM registrasi_tmp a 
+                LEFT JOIN registrasi b ON a.id = b.id_registrasi_booble
+                WHERE a.id <> ''`;
 
             if (kodeReferral) {
-                query_data_regis += ` AND a.referral_use='${kodeReferral}'`
-                detail = true
+                query_data_regis += ` AND a.referral_use='${kodeReferral}'`;
+                detail = true;
             }
-            if(cari) {
-                query_data_regis += ` AND (
-                    a.nama like '%${cari}%'
-                )`
+            if (cari) {
+                query_data_regis += ` AND (a.nama LIKE '%${cari}%')`;
             }
-            if(first_date) {
-                query_data_regis += ` AND a.tgl between '${first_date}' and '${last_date}'`
+            if (first_date) {
+                query_data_regis += ` AND a.tgl BETWEEN '${first_date}' AND '${last_date}'`;
             }
-            query_data_regis += ` ORDER BY a.id DESC`
+            query_data_regis += ` ORDER BY a.id DESC`;
 
-            let list_registrasi = await modelHelper.getRowsQuery(connection,query_data_regis)
+            let list_registrasi = await modelHelper.getRowsQuery(connection, query_data_regis);
+            console.log("Data registrasi yang sudah diproses berhasil diambil");
 
-            if (detail){
-                if (list_registrasi.length > 0){
-                    data = list_registrasi
+            if (detail) {
+                if (list_registrasi.length > 0) {
+                    data = list_registrasi;
                 }
             } else {
-                data = list_registrasi
+                data = list_registrasi;
             }
 
         } catch (error) {
@@ -135,7 +134,7 @@ module.exports = {
             throw error;
         }
 
-        return data
+        return data;
     },
 
     async cekDataRegistrasi(id_registrasi){
