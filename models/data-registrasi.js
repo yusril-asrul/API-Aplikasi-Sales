@@ -52,7 +52,7 @@ module.exports = {
 
             // Hapus tabel sementara jika ada
             console.log("Menghapus tabel sementara jika ada...");
-            let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
+            let drop_tmp = `TRUNCATE TABLE registrasi_tmp`;
             await modelHelper.getRowsQuery(connection, drop_tmp);
             console.log("Tabel sementara registrasi_tmp dihapus");
 
@@ -62,21 +62,6 @@ module.exports = {
                 let formattedDate = formatDate(row.tgl);
                 return `(${row.id}, '${row.referral_use}', '${formattedDate}', '${row.nama}', '${row.email}', '${row.telp}', '${row.kota}', '${row.paket}')`;
             }).join(',');
-
-            // Buat tabel sementara
-            console.log("Membuat tabel sementara registrasi_tmp...");
-            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                id INT(11),
-                referral_use VARCHAR(25),
-                tgl DATE,
-                nama VARCHAR(50),
-                email VARCHAR(50),
-                telp VARCHAR(15),
-                kota VARCHAR(100),
-                paket VARCHAR(50)
-            )`;
-            await modelHelper.runQuery(connection, create_tmp);
-            console.log("Tabel sementara registrasi_tmp dibuat");
 
             // Jika data_regis_booble tidak kosong, pastikan values tidak kosong sebelum melanjutkan
             if (values) {
