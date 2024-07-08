@@ -31,8 +31,10 @@ module.exports = {
             )`;
             await modelHelper.runQuery(connection,create_tmp);
 
+            /*
             let del_data_tmp = `TRUNCATE TABLE registrasi_tmp`;
             await modelHelper.runQuery(connection,del_data_tmp)
+            */
 
             let query = `
                 SELECT 
