@@ -56,6 +56,13 @@ module.exports = {
             await modelHelper.getRowsQuery(connection, drop_tmp);
             console.log("Tabel sementara registrasi_tmp dihapus");
 
+            // Membuat query batch untuk memasukkan data ke tabel sementara
+            console.log("Menyiapkan data untuk dimasukkan ke tabel sementara...");
+            let values = data_regis_booble.map(row => {
+                let formattedDate = formatDate(row.tgl);
+                return `(${row.id}, '${row.referral_use}', '${formattedDate}', '${row.nama}', '${row.email}', '${row.telp}', '${row.kota}', '${row.paket}')`;
+            }).join(',');
+
             // Buat tabel sementara
             console.log("Membuat tabel sementara registrasi_tmp...");
             let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
@@ -70,13 +77,6 @@ module.exports = {
             )`;
             await modelHelper.runQuery(connection, create_tmp);
             console.log("Tabel sementara registrasi_tmp dibuat");
-
-            // Membuat query batch untuk memasukkan data ke tabel sementara
-            console.log("Menyiapkan data untuk dimasukkan ke tabel sementara...");
-            let values = data_regis_booble.map(row => {
-                let formattedDate = formatDate(row.tgl);
-                return `(${row.id}, '${row.referral_use}', '${formattedDate}', '${row.nama}', '${row.email}', '${row.telp}', '${row.kota}', '${row.paket}')`;
-            }).join(',');
 
             // Jika data_regis_booble tidak kosong, pastikan values tidak kosong sebelum melanjutkan
             if (values) {
