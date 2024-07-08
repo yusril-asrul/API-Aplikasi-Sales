@@ -13,27 +13,6 @@ module.exports = {
         let detail = false;
 
         try {
-            // Hapus tabel sementara jika ada
-            console.log("Menghapus tabel sementara jika ada...");
-            let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
-            await modelHelper.getRowsQuery(connection, drop_tmp);
-            console.log("Tabel sementara registrasi_tmp dihapus");
-
-            // Buat tabel sementara
-            console.log("Membuat tabel sementara registrasi_tmp...");
-            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
-                id INT(11),
-                referral_use VARCHAR(25),
-                tgl DATE,
-                nama VARCHAR(50),
-                email VARCHAR(50),
-                telp VARCHAR(15),
-                kota VARCHAR(100),
-                paket VARCHAR(50)
-            )`;
-            await modelHelper.runQuery(connection, create_tmp);
-            console.log("Tabel sementara registrasi_tmp dibuat");
-
             // Query untuk mendapatkan data registrasi dari connection_booble
             console.log("Mengambil data registrasi dari connection_booble...");
             let query = `
@@ -70,6 +49,27 @@ module.exports = {
                 const day = (`0${d.getDate()}`).slice(-2);
                 return `${year}-${month}-${day}`;
             }
+
+            // Hapus tabel sementara jika ada
+            console.log("Menghapus tabel sementara jika ada...");
+            let drop_tmp = `DROP TEMPORARY TABLE IF EXISTS registrasi_tmp`;
+            await modelHelper.getRowsQuery(connection, drop_tmp);
+            console.log("Tabel sementara registrasi_tmp dihapus");
+
+            // Buat tabel sementara
+            console.log("Membuat tabel sementara registrasi_tmp...");
+            let create_tmp = `CREATE TEMPORARY TABLE IF NOT EXISTS registrasi_tmp(
+                id INT(11),
+                referral_use VARCHAR(25),
+                tgl DATE,
+                nama VARCHAR(50),
+                email VARCHAR(50),
+                telp VARCHAR(15),
+                kota VARCHAR(100),
+                paket VARCHAR(50)
+            )`;
+            await modelHelper.runQuery(connection, create_tmp);
+            console.log("Tabel sementara registrasi_tmp dibuat");
 
             // Membuat query batch untuk memasukkan data ke tabel sementara
             console.log("Menyiapkan data untuk dimasukkan ke tabel sementara...");
