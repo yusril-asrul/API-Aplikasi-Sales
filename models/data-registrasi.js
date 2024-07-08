@@ -59,7 +59,7 @@ module.exports = {
 
             if (data_regis_booble.length === 0) {
                 console.log("Tidak ada data yang diambil dari connection_booble.");
-                return data; // Mengembalikan data kosong jika tidak ada data yang diambil
+                return data = []; // Mengembalikan data kosong jika tidak ada data yang diambil
             }
 
             // Fungsi untuk memformat tanggal ke dalam format yyyy-mm-dd
