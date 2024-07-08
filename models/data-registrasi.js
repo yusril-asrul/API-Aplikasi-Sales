@@ -86,7 +86,10 @@ module.exports = {
                     a.kota,
                     a.paket,
                     IFNULL(b.demo, '') as demo,
-                    IFNULL(b.status, 'New') as status
+                    IFNULL(b.status, 'New') as status,
+                    b.status_aktif,
+                    DATE_FORMAT(b.tgl_aktif, "%d-%m-%Y") as tgl_aktif,
+                    b.nominal_closing
                 FROM registrasi_tmp a 
                 LEFT JOIN registrasi b ON a.id = b.id_registrasi_booble
                 WHERE a.id <> ''`;
