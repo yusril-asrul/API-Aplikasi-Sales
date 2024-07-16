@@ -8,6 +8,7 @@ const load = async function(req,res){
         const {cari,first_date,last_date,status} = req.body
 
         const kodeReferral = req.auth.user.kode_referral
+        
         let data = await loadDataRegistrasi(kodeReferral,cari,first_date,last_date,status);
         if (data){
             return responseSuccess(res,'Loaded.',data)

@@ -18,6 +18,7 @@ const login = async function(req,res){
             nama : data.nama,
             nohp : data.nohp,
             email : data.email,
+            kode_referral : data.kode_referral,
         })
 
         return responseSuccess(res,"Success Login",{
@@ -27,6 +28,7 @@ const login = async function(req,res){
             nama : data.nama,
             nohp : data.nohp,
             email : data.email,
+            kode_referral : data.kode_referral,
         })
         
     } catch(error){

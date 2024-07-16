@@ -52,7 +52,7 @@ module.exports = {
 
             // Hapus tabel sementara jika ada
             console.log("Menghapus tabel sementara jika ada...");
-            let drop_tmp = `TRUNCATE TABLE registrasi_tmp`;
+            let drop_tmp = `DELETE FROM registrasi_tmp WHERE referral_use = '${kodeReferral}'`;
             await modelHelper.getRowsQuery(connection, drop_tmp);
             console.log("Tabel sementara registrasi_tmp dihapus");
 
