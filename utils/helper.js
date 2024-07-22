@@ -39,7 +39,7 @@ function generateToken(obj){
     //let dJwt = JWT.sign(obj, jwtSecret);
     
     let dJwt = JWT.sign(obj, jwtSecret, {
-        expiresIn: null
+        expiresIn: '1y'
     });
     
     return dJwt
