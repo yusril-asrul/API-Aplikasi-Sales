@@ -116,11 +116,11 @@ module.exports = {
             console.log("Data registrasi yang sudah diproses berhasil diambil");
 
             if (detail) {
-                if (list_registrasi.length > 0) {
-                    data = list_registrasi[0];
-                }
+                //if (list_registrasi.length > 0) {
+                    data = list_registrasi;
+                //}
             } else {
-                data = list_registrasi[0];
+                data = list_registrasi;
             }
 
         } catch (error) {
