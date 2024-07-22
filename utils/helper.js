@@ -36,9 +36,12 @@ async function uploadBase64toPhpCI3(name,base64){
 }
 
 function generateToken(obj){
+    let dJwt = JWT.sign(obj, jwtSecret);
+    /*
     let dJwt = JWT.sign(obj, jwtSecret, {
         expiresIn: '1d'
-   });
+    });
+    */
     return dJwt
 }
 
