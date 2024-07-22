@@ -20,14 +20,7 @@ const pool = mysql.createPool({
     host: process.env.DB_MYSQL_HOST,
     user: process.env.DB_MYSQL_USER,
     password: process.env.DB_MYSQL_PASSWORD,
-    database: process.env.DB_MYSQL_NAME,
-    waitForConnections: true,
-    queueLimit: 0,
-    pool: {
-        min: 20, 
-        max: 100, 
-        idleTimeoutMillis: 30000
-    }
+    database: process.env.DB_MYSQL_NAME
 });
 
 module.exports = pool;
