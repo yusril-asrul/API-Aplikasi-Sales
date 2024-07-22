@@ -5,6 +5,9 @@ module.exports = {
     async getDataUserByUsername(username){
         const query = `SELECT id,username,password as salt,nama,nohp,email,kode_referral FROM users WHERE username = '${username}' AND isActive = 1`
         const data = await modelHelper.getRowsQuery(connection,query)
+
+        console.log('data: '+ data);
+        console.log('query: '+ query);
         if (data && data.length > 0){
             return data[0]
         }

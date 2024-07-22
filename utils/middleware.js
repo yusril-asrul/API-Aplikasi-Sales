@@ -109,7 +109,6 @@ module.exports = async (req,res,next) => {
         // ==================== start auth check level ii ====================
 
         // level 1 Check Authorization Bearer Token
-        /*
         if (!checkConditionNotAuthorizationBearer(urlName)){
             useToken = true;
             if(!(req.headers.authorization)) return NeedAuthentication(res)
@@ -118,7 +117,6 @@ module.exports = async (req,res,next) => {
             user = await decodeToken(authorizationToken)
             if (!(await getDataUserByUsername(user.username))) return Unauthorized(res)
         }
-        */
 
         // ==================== end auth check level ii ====================
 
