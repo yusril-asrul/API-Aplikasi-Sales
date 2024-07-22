@@ -117,10 +117,10 @@ module.exports = {
 
             if (detail) {
                 if (list_registrasi.length > 0) {
-                    data = list_registrasi;
+                    data = list_registrasi[0];
                 }
             } else {
-                data = list_registrasi;
+                data = list_registrasi[0];
             }
 
         } catch (error) {
