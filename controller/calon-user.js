@@ -1,4 +1,4 @@
-const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser, cekNoHp, simpanLogCalonUser, loadJenisFollowUp } = require('../models');
+const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser, cekNoHp, simpanLogCalonUser, loadJenisFollowUp, loadDataCalonUserExport } = require('../models');
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const { responseError, responseSuccess } = require('../utils/response');
 
@@ -23,6 +23,24 @@ const load = async function (req, res) {
 const load_jns_follow_up = async function (req, res) {
     try {
         let data = await loadJenisFollowUp();
+        if (data) {
+            return responseSuccess(res, 'Loaded.', data)
+        } else {
+            return responseSuccess(res, 'data not found.', {}, false)
+        }
+    } catch (error) {
+        console.log(error)
+        return responseError(res, error, 500);
+    }
+}
+
+const export_data = async function (req, res) {
+    try {
+        let id = req.params.id ? req.params.id : '';
+        const { cari, first_date, last_date, status = null } = req.body
+
+        const idUser = req.auth.user.id
+        let data = await loadDataCalonUserExport(idUser, id, cari, first_date, last_date, status);
         if (data) {
             return responseSuccess(res, 'Loaded.', data)
         } else {
@@ -143,4 +161,4 @@ const update_status = async function (req, res) {
     }
 }
 
-module.exports = { save, hapus, load, update_status, load_jns_follow_up }
+module.exports = { save, hapus, load, update_status, load_jns_follow_up, export_data }
