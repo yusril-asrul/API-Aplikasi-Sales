@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { body, param } = require("express-validator");
 const validationResult = require('../utils/validationResult');
-const { load, update_status, update_demo, load_aktfitas, simpan_aktifitas, hapus_aktiftas, update_status_aktifitas, load_kebutuhan, simpan_kebutuhan, hapus_kebutuhan} = require('../controller/data-registrasi');
+const { load, update_status, update_demo, load_aktfitas, simpan_aktifitas, hapus_aktiftas, update_status_aktifitas, load_kebutuhan, simpan_kebutuhan, hapus_kebutuhan, load_all_user} = require('../controller/data-registrasi');
 const { nextAdd, nextEdit } = require("../utils/helper");
 
 const validatorAktifitas = [
@@ -22,5 +22,6 @@ router.post("/update_status_aktifitas", update_status_aktifitas);
 router.post("/load_kebutuhan", load_kebutuhan);
 router.post("/simpan_kebutuhan", simpan_kebutuhan);
 router.post("/hapus_kebutuhan", hapus_kebutuhan);
+router.post("/load_all_user",load_all_user);
 
 module.exports = router;

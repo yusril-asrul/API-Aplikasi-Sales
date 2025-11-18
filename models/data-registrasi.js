@@ -1,14 +1,14 @@
 const connection = require('../config/database');
 const connection_booble = require('../config/database_booble');
 const modelHelper = require('./model-helper');
-const {dirUpload} = require('../config/app')
+const { dirUpload } = require('../config/app')
 
 module.exports = {
-    async simpanUpdateRegistrasi(jns,table,data,id='',key=''){
-        let query = await modelHelper.saveRowQuery(connection,table,data,id,jns,key)
+    async simpanUpdateRegistrasi(jns, table, data, id = '', key = '') {
+        let query = await modelHelper.saveRowQuery(connection, table, data, id, jns, key)
         return query
     },
-    async loadDataRegistrasi(kodeReferral,cari='',first_date='',last_date='',status=''){
+    async loadDataRegistrasi(kodeReferral, cari = '', first_date = '', last_date = '', status = '') {
         let data = false;
         let detail = false;
 
@@ -117,7 +117,7 @@ module.exports = {
 
             if (detail) {
                 //if (list_registrasi.length > 0) {
-                    data = list_registrasi;
+                data = list_registrasi;
                 //}
             } else {
                 data = list_registrasi;
@@ -131,7 +131,93 @@ module.exports = {
         return data;
     },
 
-    async cekDataRegistrasi(id_registrasi){
+    async loadDataRegistrasiAll(cari = '') {
+        let data = false;
+        let detail = false;
+
+        try {
+            // Query untuk mendapatkan data registrasi dari connection_booble
+            console.log("Mengambil data registrasi dari connection_booble...");
+            let query = `
+                SELECT 
+                    a.id,
+                    a.nama_toko as nama_usaha,
+                    a.nama as pemilik_usaha,
+                    a.telp,
+                    a.alamat,
+                    a.jns_usaha
+                FROM registrasi a 
+                LEFT JOIN jns_tagihan b ON a.jns_tagihan = b.id
+                WHERE a.tgl >= '2024-07-04' 
+                    AND a.tgl_active IS NOT NULL
+                    AND (a.nama_toko like '%${cari}%' or a.nama like '%${cari}%')
+                ORDER BY a.nama`;
+
+            let data_regis_booble = await modelHelper.getRowsQuery(connection_booble, query);
+            console.log("Data registrasi berhasil diambil:", data_regis_booble);
+
+            if (data_regis_booble.length === 0) {
+                console.log("Tidak ada data yang diambil dari connection_booble.");
+                return data = []; // Mengembalikan data kosong jika tidak ada data yang diambil
+            }
+
+            // Hapus tabel sementara jika ada
+            console.log("Menghapus tabel sementara jika ada...");
+            let drop_tmp = `DELETE FROM registrasi_tmp_ro`;
+            await modelHelper.getRowsQuery(connection, drop_tmp);
+            console.log("Tabel sementara registrasi_tmp_ro dihapus");
+
+            // Membuat query batch untuk memasukkan data ke tabel sementara
+            console.log("Menyiapkan data untuk dimasukkan ke tabel sementara...");
+            let values = data_regis_booble.map(row => {
+                return `(${row.id}, '${row.nama_usaha}', '${row.pemilik_usaha}', '${row.telp}', '${row.alamat}', '${row.jns_usaha}')`;
+            }).join(',');
+
+            // Jika data_regis_booble tidak kosong, pastikan values tidak kosong sebelum melanjutkan
+            if (values) {
+                console.log("Memasukkan data ke tabel sementara...");
+                let insert_tmp = `
+                    INSERT INTO registrasi_tmp_ro (id, nama_usaha, pemilik_usaha, telp, alamat, jns_usaha) 
+                    VALUES ${values}`;
+                await modelHelper.getRowsQuery(connection, insert_tmp);
+                console.log("Data dimasukkan ke tabel sementara registrasi_tmp_ro");
+            }
+
+            // Query untuk mendapatkan data registrasi yang sudah diproses
+            console.log("Mengambil data registrasi yang sudah diproses...");
+            let query_data_regis = `
+                SELECT 
+                    a.id,
+                    a.nama_usaha,
+                    a.pemilik_usaha,
+                    a.telp,
+                    a.alamat,
+                    a.jns_usaha
+                FROM registrasi_tmp_ro a`;
+
+
+            query_data_regis += ` ORDER BY a.id DESC`;
+
+            let list_registrasi = await modelHelper.getRowsQuery(connection, query_data_regis);
+            console.log("Data registrasi yang sudah diproses berhasil diambil");
+
+            if (detail) {
+                //if (list_registrasi.length > 0) {
+                data = list_registrasi;
+                //}
+            } else {
+                data = list_registrasi;
+            }
+
+        } catch (error) {
+            console.error("Error dalam loadDataRegistrasi:", error);
+            throw error;
+        }
+
+        return data;
+    },
+
+    async cekDataRegistrasi(id_registrasi) {
         let data = false;
 
         let query = `
@@ -140,18 +226,18 @@ module.exports = {
             from registrasi a 
             where a.id_registrasi_booble = '${id_registrasi}'`
 
-        let list_registrasi = await modelHelper.getRowsQuery(connection,query)
+        let list_registrasi = await modelHelper.getRowsQuery(connection, query)
 
-        if (list_registrasi.length > 0){
+        if (list_registrasi.length > 0) {
             data = list_registrasi[0].id
         }
 
         return data
     },
 
-    async loadDataAktifitas(id_registrasi){
+    async loadDataAktifitas(id_registrasi) {
         let data = false;
-        let detail = true; 
+        let detail = true;
 
         let query = `
             SELECT 
@@ -166,7 +252,7 @@ module.exports = {
             where a.id_registrasi = '${id_registrasi}'
             order by a.id desc`
 
-        let list_aktifitas = await modelHelper.getRowsQuery(connection,query)
+        let list_aktifitas = await modelHelper.getRowsQuery(connection, query)
 
 
         /*if (detail){
@@ -174,18 +260,18 @@ module.exports = {
                 data = list_aktifitas
             }
         } else {*/
-            data = list_aktifitas
+        data = list_aktifitas
         //}
 
         return data
     },
-    async hapusAktifitas(id){
-        return await modelHelper.deleteById(connection,table='aktifitas',id)
+    async hapusAktifitas(id) {
+        return await modelHelper.deleteById(connection, table = 'aktifitas', id)
     },
 
-    async loadDataKebutuhan(id_registrasi){
+    async loadDataKebutuhan(id_registrasi) {
         let data = false;
-        let detail = true; 
+        let detail = true;
 
         let query = `
             SELECT 
@@ -195,7 +281,7 @@ module.exports = {
             where a.id_registrasi = '${id_registrasi}'
             order by a.id desc`
 
-        let list_kebutuhan = await modelHelper.getRowsQuery(connection,query)
+        let list_kebutuhan = await modelHelper.getRowsQuery(connection, query)
 
 
         /*if (detail){
@@ -203,12 +289,12 @@ module.exports = {
                 data = list_aktifitas
             }
         } else {*/
-            data = list_kebutuhan
+        data = list_kebutuhan
         //}
 
         return data
     },
-    async hapusKebutuhan(id){
-        return await modelHelper.deleteById(connection,table='kebutuhan',id)
+    async hapusKebutuhan(id) {
+        return await modelHelper.deleteById(connection, table = 'kebutuhan', id)
     },
 }

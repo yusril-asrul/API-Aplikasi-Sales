@@ -16,7 +16,7 @@ module.exports = {
     async hapusDataCalonUser(id) {
         return await modelHelper.deleteById(connection, table, id)
     },
-    async loadDataCalonUser(idUser, id = '', cari = '', first_date = '', last_date = '') {
+    async loadDataCalonUser(idUser, id = '', cari = '', first_date = '', last_date = '', status = '') {
         let data = false;
         let detail = false
 
@@ -46,6 +46,9 @@ module.exports = {
         if (first_date) {
             query += ` AND date(createdAt) between '${first_date}' and '${last_date}'`
         }
+        if (status) {
+            query += ` AND status = '${status}'`
+        }
 
         query += ` ORDER BY id DESC`
 
@@ -58,6 +61,20 @@ module.exports = {
         } else {
             data = rows
         }
+
+        return data
+    },
+    async loadJenisFollowUp() {
+        let query = `
+            SELECT 
+                label,
+                pesan
+            FROM format_follow_up
+            ORDER BY id`
+
+        let rows = await modelHelper.getRowsQuery(connection, query)
+
+        data = rows
 
         return data
     },
