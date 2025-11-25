@@ -24,7 +24,8 @@ module.exports = {
             SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,
             jenis_usaha,
             jenis_user,
-            catatan,nominal,
+            catatan,
+            ifnull(nominal,0) as nominal,
             map_lat, map_long,
             applikasi_yang_digunakan,lama_tahun,lama_bulan,
             masa_berakhir,
@@ -32,7 +33,7 @@ module.exports = {
             status,
             keterangan,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
-            FROM ${table} WHERE id_user = '${idUser}'`
+            FROM ${table} WHERE id_user = '${idUser}' AND id_telesales is not null AND id_telesales <> '0'`
         if (id) {
             query += ` AND id='${id}'`
             detail = true
@@ -61,6 +62,31 @@ module.exports = {
         } else {
             data = rows
         }
+
+        return data
+    },
+    async loadDataCalonUserLost() {
+
+        let query = `
+            SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,
+            jenis_usaha,
+            jenis_user,
+            catatan,
+            ifnull(nominal,0) as nominal,
+            map_lat, map_long,
+            applikasi_yang_digunakan,lama_tahun,lama_bulan,
+            masa_berakhir,
+            CONCAT('${dirUpload}',foto) as url_image,
+            status,
+            keterangan,
+            DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
+            FROM ${table} WHERE status = 'Lose'`
+
+        query += ` ORDER BY id DESC`
+
+        let rows = await modelHelper.getRowsQuery(connection, query)
+
+        let data = rows
 
         return data
     },
@@ -147,12 +173,17 @@ module.exports = {
 
         return data
     },
-    async cekNoHp(nohp) {
+    async cekNoHp(nohp, id_edit='') {
         let data = true;
+
+        let where_edit = '';
+        if(id_edit != '') {
+            where_edit = ` AND id <> '${id_edit}'`
+        }
 
         let query = `
             SELECT id
-            FROM ${table} WHERE nohp = '${nohp}'`
+            FROM ${table} WHERE nohp = '${nohp}' ${where_edit}`
 
         let rows = await modelHelper.getRowsQuery(connection, query)
 

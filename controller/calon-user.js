@@ -1,4 +1,4 @@
-const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser, cekNoHp, simpanLogCalonUser, loadJenisFollowUp, loadDataCalonUserExport } = require('../models');
+const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser, cekNoHp, simpanLogCalonUser, loadJenisFollowUp, loadDataCalonUserExport, loadDataCalonUserLost } = require('../models');
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const { responseError, responseSuccess } = require('../utils/response');
 
@@ -9,6 +9,20 @@ const load = async function (req, res) {
 
         const idUser = req.auth.user.id
         let data = await loadDataCalonUser(idUser, id, cari, first_date, last_date, status);
+        if (data) {
+            return responseSuccess(res, 'Loaded.', data)
+        } else {
+            return responseSuccess(res, 'data not found.', {}, false)
+        }
+    } catch (error) {
+        console.log(error)
+        return responseError(res, error, 500);
+    }
+}
+
+const load_data_lost = async function (req, res) {
+    try {
+        let data = await loadDataCalonUserLost();
         if (data) {
             return responseSuccess(res, 'Loaded.', data)
         } else {
@@ -69,12 +83,16 @@ const save = async function (req, res) {
         const { applikasi_yang_digunakan, lama_tahun, lama_bulan, masa_berakhir, catatan } = req.body
         const idUser = req.auth.user.id
         const jns = req.jenis
+        let id_telesales = req.body.id_telesales ? req.body.id_telesales : '';
 
         if (nohp == '') {
             return responseSuccess(res, 'Nomor HP Tidak Boleh Kosong.')
         }
 
         let validateHp = await cekNoHp(nohp);
+        if (jns === "EDIT") {
+            validateHp = await cekNoHp(nohp, req.params.id);
+        }
         if (!validateHp) {
             return responseSuccess(res, 'Nomor HP Sudah Terdaftar.')
         }
@@ -88,6 +106,11 @@ const save = async function (req, res) {
             applikasi_yang_digunakan,
             lama_tahun, lama_bulan, masa_berakhir,
             catatan
+        }
+
+        if (id_telesales != '') {
+            data.id_telesales = id_telesales;
+            jns = "EDIT";
         }
 
         if (nominal !== undefined) {
@@ -161,4 +184,4 @@ const update_status = async function (req, res) {
     }
 }
 
-module.exports = { save, hapus, load, update_status, load_jns_follow_up, export_data }
+module.exports = { save, hapus, load, update_status, load_jns_follow_up, export_data, load_data_lost }

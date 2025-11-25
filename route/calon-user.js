@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { body, param } = require("express-validator");
 const validationResult = require('../utils/validationResult');
-const { save, hapus, load, update_status, load_jns_follow_up, export_data } = require('../controller/calon-user');
+const { save, hapus, load, update_status, load_jns_follow_up, export_data, load_data_lost } = require('../controller/calon-user');
 const { nextAdd, nextEdit } = require("../utils/helper");
 
 // Validate Request
@@ -41,5 +41,6 @@ router.post("/load_list", load);
 router.post("/stat_update", update_status);
 router.post("/load_format_follow_up", load_jns_follow_up);
 router.post("/export", export_data);
+router.post("/load_data_lost", load_data_lost);
 
 module.exports = router;
