@@ -86,7 +86,8 @@ const save = async function (req, res) {
         let id_telesales = req.body.id_telesales ? req.body.id_telesales : '';
 
         if (nohp == '') {
-            return responseSuccess(res, 'Nomor HP Tidak Boleh Kosong.')
+            let data = {};
+            return responseSuccess(res, 'Nomor HP Tidak Boleh Kosong.', data, false)
         }
 
         let validateHp = await cekNoHp(nohp);
@@ -94,7 +95,8 @@ const save = async function (req, res) {
             validateHp = await cekNoHp(nohp, req.params.id);
         }
         if (!validateHp) {
-            return responseSuccess(res, 'Nomor HP Sudah Terdaftar.')
+            let data = {};
+            return responseSuccess(res, 'Nomor HP Sudah Terdaftar.', data, false)
         }
 
         let message = ''
