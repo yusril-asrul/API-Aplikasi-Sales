@@ -33,7 +33,7 @@ module.exports = {
             status,
             keterangan,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
-            FROM ${table} WHERE id_user = '${idUser}' AND id_telesales is not null AND id_telesales <> '0'`
+            FROM ${table} WHERE id_user = '${idUser}' /* AND id_telesales is not null AND id_telesales <> '0' */`
         if (id) {
             query += ` AND id='${id}'`
             detail = true
@@ -173,11 +173,11 @@ module.exports = {
 
         return data
     },
-    async cekNoHp(nohp, id_edit='') {
+    async cekNoHp(nohp, id_edit = '') {
         let data = true;
 
         let where_edit = '';
-        if(id_edit != '') {
+        if (id_edit != '') {
             where_edit = ` AND id <> '${id_edit}'`
         }
 
