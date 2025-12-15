@@ -6,6 +6,10 @@ const load = async function (req, res) {
     try {
         let id = req.params.id ? req.params.id : '';
         const { cari } = req.body
+        let first_date = req.params.first_date ? req.params.first_date : '';
+        let last_date = req.params.last_date ? req.params.last_date : '';
+        let status = req.params.status ? req.params.status : '';
+
 
         const kodeReferral = req.auth.user.kode_referral
 
