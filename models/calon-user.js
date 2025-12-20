@@ -32,7 +32,7 @@ module.exports = {
             CONCAT('${dirUpload}',foto) as url_image,
             status,
             keterangan,
-            if(id_telesales is not null AND id_telesales <> '0', 'Follow Up Lost', '') as tipe
+            if(id_telesales is not null AND id_telesales <> '0', 'Follow Up Lost', '') as tipe,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
             FROM ${table} WHERE id_user = '${idUser}' /* AND id_telesales is not null AND id_telesales <> '0' */`
         if (id) {
