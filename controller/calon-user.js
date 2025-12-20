@@ -122,12 +122,14 @@ const save = async function (req, res) {
             jns = "EDIT";
 
             let id_edit = id_data;
-            let query = `SELECT id_user
+            let query = `SELECT id_user, createdAt
                 FROM calon_user WHERE id = '${id_edit}'`;
 
             let id_user_old = await modelHelper.getRowsQuery(connection, query);
 
             data.id_user_old = id_user_old[0].id_user;
+            data.createdAt_old = id_user_old[0].createdAt;
+            data.createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
             data.status = 'New';
         }
 
