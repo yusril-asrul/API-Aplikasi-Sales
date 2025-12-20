@@ -122,7 +122,8 @@ const save = async function (req, res) {
             jns = "EDIT";
 
             let id_edit = id_data;
-            let query = `SELECT id_user, createdAt
+            let query = `SELECT if(id_user_old <> '0', id_user_old, id_user) as id_user, 
+                    if(createdAt_old is not null, createdAt_old, createdAt) as createdAt
                 FROM calon_user WHERE id = '${id_edit}'`;
 
             let id_user_old = await modelHelper.getRowsQuery(connection, query);
