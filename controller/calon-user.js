@@ -1,6 +1,8 @@
 const { simpanDataCalonUser, hapusDataCalonUser, loadDataCalonUser, cekNoHp, simpanLogCalonUser, loadJenisFollowUp, loadDataCalonUserExport, loadDataCalonUserLost } = require('../models');
 const { randomString, uploadBase64toPhpCI3 } = require('../utils/helper');
 const { responseError, responseSuccess } = require('../utils/response');
+const connection = require('../config/database');
+const modelHelper = require('../models/model-helper');
 
 const load = async function (req, res) {
     try {
@@ -84,6 +86,7 @@ const save = async function (req, res) {
         const idUser = req.auth.user.id
         let jns = req.jenis
         let id_telesales = req.body.id_telesales ? req.body.id_telesales : '';
+        let id_data = req.body.id_data ? req.body.id_data : '';
 
         if (nohp == '') {
             let data = {};
@@ -91,8 +94,12 @@ const save = async function (req, res) {
         }
 
         let validateHp = await cekNoHp(nohp);
-        if (jns === "EDIT") {
-            validateHp = await cekNoHp(nohp, req.params.id);
+        if (jns === "EDIT" || id_telesales != '') {
+            if (id_telesales != '') {
+                validateHp = await cekNoHp(nohp, id_data);
+            } else {
+                validateHp = await cekNoHp(nohp, req.params.id);
+            }
         }
         if (!validateHp) {
             let data = {};
@@ -113,6 +120,14 @@ const save = async function (req, res) {
         if (id_telesales != '') {
             data.id_telesales = id_telesales;
             jns = "EDIT";
+
+            let id_edit = id_data;
+            let query = `SELECT id_user
+                FROM calon_user WHERE id = '${id_edit}'`;
+
+            let id_user_old = await modelHelper.getRowsQuery(connection, query);
+
+            data.id_user_old = id_user_old[0].id_user;
         }
 
         if (nominal !== undefined) {
@@ -130,8 +145,15 @@ const save = async function (req, res) {
             message = 'Created.'
         } else if (jns === "EDIT") {
             let id = req.params.id
+            if (id_telesales != '') {
+                id = id_data;
+            }
             await simpanDataCalonUser(jns, data, id, 'id')
-            message = 'Edited.'
+            if (id_telesales != '') {
+                message = 'Created.'
+            } else {
+                message = 'Edited.'
+            }
         }
 
         return responseSuccess(res, message)
