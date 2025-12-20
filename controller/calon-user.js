@@ -128,6 +128,7 @@ const save = async function (req, res) {
             let id_user_old = await modelHelper.getRowsQuery(connection, query);
 
             data.id_user_old = id_user_old[0].id_user;
+            data.status = 'New';
         }
 
         if (nominal !== undefined) {
