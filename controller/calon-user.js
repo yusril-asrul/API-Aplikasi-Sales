@@ -82,7 +82,7 @@ const save = async function (req, res) {
         const { nama_usaha, pemilik_usaha, nohp, alamat, lat, long, foto, jenis_usaha, jenis_user, nominal } = req.body
         const { applikasi_yang_digunakan, lama_tahun, lama_bulan, masa_berakhir, catatan } = req.body
         const idUser = req.auth.user.id
-        const jns = req.jenis
+        let jns = req.jenis
         let id_telesales = req.body.id_telesales ? req.body.id_telesales : '';
 
         if (nohp == '') {
