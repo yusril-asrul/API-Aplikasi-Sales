@@ -24,7 +24,9 @@ const load = async function (req, res) {
 
 const load_data_lost = async function (req, res) {
     try {
-        let data = await loadDataCalonUserLost();
+        let cari = req.body.cari ? req.body.cari : '';
+
+        let data = await loadDataCalonUserLost(cari);
         if (data) {
             return responseSuccess(res, 'Loaded.', data)
         } else {

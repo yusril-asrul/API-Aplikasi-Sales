@@ -66,7 +66,7 @@ module.exports = {
 
         return data
     },
-    async loadDataCalonUserLost() {
+    async loadDataCalonUserLost(cari = '') {
 
         let query = `
             SELECT id,nama_usaha,pemilik_usaha,nohp,alamat,
@@ -81,7 +81,15 @@ module.exports = {
             status,
             keterangan,
             DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i:%s") as create_at
-            FROM ${table} WHERE status = 'Lose'`
+            FROM ${table} 
+            WHERE status = 'Lose'`;
+
+        if (cari) {
+            query += ` AND (
+                nama_usaha like '%${cari}%'
+                or pemilik_usaha like '%${cari}%'
+            )`;
+        }
 
         query += ` ORDER BY id DESC`
 
